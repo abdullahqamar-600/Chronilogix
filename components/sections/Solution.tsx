@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AIOrb } from "@/components/AIOrb";
 
 const SESSION_MESSAGES = [
@@ -13,12 +13,12 @@ const SESSION_MESSAGES = [
 const STEPS = [
   {
     label: "Listening",
-    title: "Before any advice, it learns who you really are.",
+    title: "Before any advice, it learns who you are.",
     Visual: IntakeVisual,
   },
   {
     label: "Asking",
-    title: "Open questions that help insight find you.",
+    title: "It asks. It does not advise.",
     Visual: SessionVisual,
   },
   {
@@ -32,30 +32,27 @@ export function Solution() {
   return (
     <section
       id="solution"
-      className="relative overflow-hidden rounded-[28px] bg-paper-warm pt-24 md:pt-32 lg:pt-40"
+      className="relative overflow-hidden rounded-[28px] bg-paper-warm py-24 md:py-32 lg:py-40"
     >
       <div className="container-page">
         <div className="max-w-3xl">
-          <p className="eyebrow">How AI coaching helps</p>
+          <p className="eyebrow">The methodology</p>
           <h2 className="mt-6 text-display font-normal tracking-tight text-ink">
             Coaching that listens.
             <br />
             Asks. Remembers.
           </h2>
-          <a
-            href="#book-a-demo"
-            className="mt-8 inline-flex items-center gap-2 text-base font-medium text-brand-700 transition hover:text-brand-800"
-          >
-            See how it works
-            <Arrow />
-          </a>
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft md:text-xl">
+            Most AI gives information and calls it coaching. Chronilogix does
+            what the science says actually works.
+          </p>
         </div>
       </div>
 
       <div className="mt-14 px-1.5 pb-1.5 md:mt-20 md:px-2 md:pb-2">
         <div className="grid gap-1.5 md:gap-2 lg:grid-cols-3">
-          {STEPS.map((s) => (
-            <StepCard key={s.label} step={s} />
+          {STEPS.map((step) => (
+            <StepCard key={step.label} step={step} />
           ))}
         </div>
       </div>
@@ -71,7 +68,7 @@ function StepCard({
   const { Visual } = step;
   return (
     <article className="group overflow-hidden rounded-2xl bg-white">
-      <div className="relative aspect-[4/5] overflow-hidden">
+      <div className="relative aspect-square overflow-hidden">
         <Visual />
       </div>
       <div className="p-6 md:p-8 lg:p-10">
@@ -86,80 +83,82 @@ function StepCard({
 
 function IntakeVisual() {
   const items = [
-    "Values & motivation",
-    "Cultural context",
-    "Stress patterns",
-    "Daily rhythms",
-    "Goals & barriers",
+    "Values & Motivation",
+    "Cultural Context",
+    "Stress Patterns",
+    "Daily Rhythms",
+    "Goals & Barriers",
   ];
-  return (
-    <div className="absolute inset-0 flex flex-col items-start justify-center bg-gradient-to-br from-paper via-paper to-brand-50/60 p-8 md:p-10">
-      <div className="flex items-center gap-3">
-        <BrainIcon />
-        <h4 className="text-lg font-medium text-ink md:text-xl">Listening</h4>
-      </div>
 
-      <ul className="mt-7 space-y-4 md:mt-9 md:space-y-5">
-        {items.map((label, i) => (
-          <li
-            key={label}
-            className="flex items-center gap-4 text-[15px] leading-snug text-ink md:text-base"
-            style={{
-              animation: `fadeUp 500ms ease-out ${i * 450 + 500}ms forwards`,
-              opacity: 0,
-            }}
-          >
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-600/15 text-brand-700">
-              <svg width="11" height="11" viewBox="0 0 9 9" fill="none" aria-hidden>
-                <path
-                  d="M1.5 4.5 3.5 6.5 7.5 2.5"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-            {label}
-          </li>
-        ))}
-      </ul>
+  // Loop the whole intro animation (brain fill + sequential checkmarks).
+  // Total run is ~2800ms; rest a beat then replay.
+  const LOOP_MS = 4500;
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setTick((v) => v + 1), LOOP_MS);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <div className="absolute inset-0 flex flex-col items-start justify-center bg-gradient-to-br from-paper via-paper to-brand-50/60 p-8 md:p-10 lg:p-12">
+      <div key={tick} className="flex w-full flex-col items-start">
+        <BrainIcon />
+        <h4 className="mt-4 text-3xl font-normal tracking-tight text-ink md:text-4xl">
+          Listening
+        </h4>
+
+        <ul className="mt-8 space-y-4 self-stretch pl-6 md:mt-10 md:space-y-5 md:pl-8">
+          {items.map((label, i) => (
+            <li
+              key={label}
+              className="flex items-center gap-3.5 text-base leading-snug text-ink md:text-lg"
+              style={{
+                animation: `fadeUp 500ms ease-out ${i * 450 + 500}ms forwards`,
+                opacity: 0,
+              }}
+            >
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600">
+                <svg width="12" height="12" viewBox="0 0 9 9" fill="none" aria-hidden>
+                  <path
+                    d="M1.5 4.5 3.5 6.5 7.5 2.5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              {label}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
 
 function BrainIcon() {
-  // Filling brain — outline + clipped fill that grows from bottom up
   return (
     <span
-      className="relative inline-flex h-7 w-8 shrink-0"
+      className="relative inline-flex h-10 w-10 shrink-0 md:h-11 md:w-11"
       aria-hidden
     >
-      <svg
-        className="absolute inset-0 h-full w-full text-ink-soft"
-        viewBox="0 0 28 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinejoin="round"
-      >
-        <ellipse cx="9" cy="12" rx="6" ry="9" />
-        <ellipse cx="19" cy="12" rx="6" ry="9" />
-      </svg>
-      <svg
-        className="absolute inset-0 h-full w-full text-brand-600"
-        viewBox="0 0 28 24"
-        fill="currentColor"
-        stroke="currentColor"
-        strokeWidth="0.4"
+      <img
+        src="/brain-empty.svg"
+        alt=""
+        className="absolute inset-0 h-full w-full select-none"
+        draggable={false}
+      />
+      <img
+        src="/brain-loading.svg"
+        alt=""
+        className="absolute inset-0 h-full w-full select-none"
+        draggable={false}
         style={{
           clipPath: "inset(100% 0 0 0)",
-          animation: "brainFill 2400ms ease-out 500ms forwards",
+          animation: "brainFill 2400ms ease-out 400ms forwards",
         }}
-      >
-        <ellipse cx="9" cy="12" rx="6" ry="9" />
-        <ellipse cx="19" cy="12" rx="6" ry="9" />
-      </svg>
+      />
     </span>
   );
 }
@@ -199,122 +198,68 @@ function SessionVisual() {
 }
 
 function MemoryVisual() {
-  const memories = [
-    { when: "Two weeks ago", text: "Sundays are the hardest." },
-    { when: "Last session", text: "Cooking grounds me." },
-    {
-      when: "Today",
-      text: "Building on both insights.",
-      current: true,
-    },
+  const STAGES = [
+    { label: "Two Weeks Ago", text: "“Sundays are the hardest.”" },
+    { label: "Last Session", text: "“Cooking grounds me.”" },
+    { label: "Today", text: "“Building on both insights.”" },
   ];
+  const STAGE_MS = 3500;
+  const [stage, setStage] = useState(0);
 
-  const STEP_MS = 1100; // time per pipeline beat
-  const LINE_MS = 700;
+  useEffect(() => {
+    const t = setInterval(
+      () => setStage((s) => (s + 1) % STAGES.length),
+      STAGE_MS,
+    );
+    return () => clearInterval(t);
+  }, []);
+
+  const isLast = stage === STAGES.length - 1;
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-paper via-paper to-brand-50/40 p-7 md:p-10">
-      <div className="w-full max-w-[320px]">
-        {/* Horizontal pipeline */}
-        <div className="flex items-center">
-          {memories.map((m, i) => (
-            <Fragment key={i}>
-              <PipelineNode current={m.current} delay={i * STEP_MS} />
-              {i < memories.length - 1 && (
-                <div className="mx-1.5 h-px flex-1 bg-brand-600/15">
-                  <span
-                    className="block h-full origin-left bg-brand-600"
-                    style={{
-                      animation: `scaleXFromLeft ${LINE_MS}ms ease-out ${i * STEP_MS + 500}ms forwards`,
-                      transform: "scaleX(0)",
-                    }}
-                  />
-                </div>
-              )}
-            </Fragment>
-          ))}
-        </div>
+    <div className="absolute inset-0 flex flex-col justify-center bg-gradient-to-br from-paper via-paper to-brand-50/40 p-8 md:p-10 lg:p-12">
+      {/* Pipeline — full width, two nodes joined by a brand-colored line */}
+      <div className="flex items-center">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white shadow-sm">
+          <svg width="12" height="12" viewBox="0 0 9 9" fill="none" aria-hidden>
+            <path
+              d="M1.5 4.5 3.5 6.5 7.5 2.5"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+        <div className="h-px flex-1 bg-brand-600" />
+        {isLast ? (
+          <AIOrb size={28} />
+        ) : (
+          <span className="h-7 w-7 shrink-0 rounded-full bg-brand-100" />
+        )}
+      </div>
 
-        {/* Labels below each node */}
-        <div className="mt-6 grid grid-cols-3 gap-3">
-          {memories.map((m, i) => (
-            <div
-              key={i}
-              className="text-center"
-              style={{
-                animation: `fadeUp 500ms ease-out ${i * STEP_MS + 250}ms forwards`,
-                opacity: 0,
-              }}
-            >
-              <p
-                className={`text-[11px] font-medium leading-tight ${
-                  m.current ? "text-brand-700" : "text-ink-muted"
-                }`}
-              >
-                {m.when}
-              </p>
-              <p className="mt-1.5 text-[12px] leading-snug text-ink">
-                “{m.text}”
-              </p>
-            </div>
-          ))}
-        </div>
+      {/* Label + quote — crossfade on stage change */}
+      <div key={stage} className="mt-8 md:mt-10">
+        <p
+          className="text-sm font-medium text-brand-600 md:text-base"
+          style={{
+            animation: "fadeUp 450ms ease-out forwards",
+            opacity: 0,
+          }}
+        >
+          {STAGES[stage].label}
+        </p>
+        <p
+          className="mt-3 text-2xl font-normal leading-snug text-ink md:text-3xl"
+          style={{
+            animation: "fadeUp 600ms ease-out 180ms forwards",
+            opacity: 0,
+          }}
+        >
+          {STAGES[stage].text}
+        </p>
       </div>
     </div>
-  );
-}
-
-function PipelineNode({
-  current,
-  delay,
-}: {
-  current?: boolean;
-  delay: number;
-}) {
-  if (current) {
-    return (
-      <span
-        className="shrink-0"
-        style={{
-          animation: `circlePop 700ms cubic-bezier(0.34, 1.6, 0.64, 1) ${delay}ms forwards`,
-          opacity: 0,
-        }}
-      >
-        <AIOrb size={22} />
-      </span>
-    );
-  }
-  return (
-    <span
-      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-600 ring-4 ring-brand-50"
-      style={{
-        animation: `circlePop 700ms cubic-bezier(0.34, 1.6, 0.64, 1) ${delay}ms forwards`,
-        opacity: 0,
-      }}
-    >
-      <svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden>
-        <path
-          d="M1.5 4.5 3.5 6.5 7.5 2.5"
-          stroke="white"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </span>
-  );
-}
-
-function Arrow() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-      <path
-        d="M3 7h8M7.5 3.5 11 7l-3.5 3.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }

@@ -1,26 +1,3 @@
-const FOOTER_COLUMNS: { title: string; links: string[] }[] = [
-  {
-    title: "Platform",
-    links: ["How It Works", "The Methodology", "Integrations", "Changelog"],
-  },
-  {
-    title: "Solutions",
-    links: ["Employers", "Universities", "Health Plans", "App Partners"],
-  },
-  {
-    title: "Company",
-    links: ["About", "Dr. Ken Resnicow", "Careers", "Blog", "Responsible AI"],
-  },
-  {
-    title: "Resources",
-    links: ["Case Studies", "Trust & Security", "Clinical Approach"],
-  },
-  {
-    title: "Legal",
-    links: ["Privacy Policy", "Terms of Service", "HIPAA Notice"],
-  },
-];
-
 export function FinalCTA() {
   return (
     <section
@@ -29,8 +6,7 @@ export function FinalCTA() {
     >
       <Glow />
 
-      {/* CTA area */}
-      <div className="container-page relative pt-24 md:pt-32 lg:pt-40">
+      <div className="container-page relative py-24 md:py-32 lg:py-40">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr] md:items-end">
           <div>
             <h2 className="max-w-xl text-2xl font-normal leading-snug text-white md:text-3xl">
@@ -50,41 +26,6 @@ export function FinalCTA() {
               <ArrowIcon />
             </a>
           </div>
-        </div>
-      </div>
-
-      {/* Footer column grid */}
-      <div className="container-page relative mt-20 border-t border-white/10 pt-12 md:mt-28 md:pt-14">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
-          {FOOTER_COLUMNS.map((col) => (
-            <div key={col.title}>
-              <h4 className="text-xs font-medium uppercase tracking-[0.16em] text-white/50">
-                {col.title}
-              </h4>
-              <ul className="mt-4 space-y-3">
-                {col.links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-sm text-white/80 transition hover:text-white"
-                    >
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Bottom strip */}
-      <div className="relative mt-16 border-t border-white/10 md:mt-20">
-        <div className="container-page flex flex-col items-start gap-3 py-6 text-xs text-white/55 md:flex-row md:items-center md:justify-between">
-          <p>© 2026 Chronilogix · HIPAA Compliant · Made in the USA</p>
-          <p className="text-white/40">
-            Member data is never used to train our models.
-          </p>
         </div>
       </div>
     </section>

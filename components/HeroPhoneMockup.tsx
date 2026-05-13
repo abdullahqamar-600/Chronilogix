@@ -35,9 +35,11 @@ const NOTCH = {
 };
 
 export function HeroPhoneMockup({ progress }: { progress: number }) {
-  const phoneRiseLinear = clamp01((progress - 0.15) / (0.7 - 0.15));
+  // Phone is hidden at page load and rises into view as the hero
+  // runway is scrolled. At peak ~55% is visible so it sits lower.
+  const phoneRiseLinear = clamp01((progress - 0.12) / (0.65 - 0.12));
   const phoneRise = easeInOutCubic(phoneRiseLinear);
-  const phoneTranslateY = 100 - phoneRise * 60;
+  const phoneTranslateY = 100 - phoneRise * 55;
 
   return (
     <div
@@ -47,7 +49,7 @@ export function HeroPhoneMockup({ progress }: { progress: number }) {
         willChange: "transform",
       }}
     >
-      <div className="relative aspect-[671/1375] w-[clamp(260px,28vw,400px)]">
+      <div className="relative aspect-[671/1375] w-[clamp(290px,31vw,440px)]">
         <img
           src="/iphone/Iphone.svg"
           alt=""

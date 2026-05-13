@@ -157,7 +157,7 @@ const PERSONAS: Persona[] = [
   },
 ];
 
-const ROTATION_MS = 7000;
+const ROTATION_MS = 12000;
 
 export function WhoWeServe() {
   const [active, setActive] = useState(0);
@@ -244,42 +244,53 @@ function PersonaNav({
   active: number;
   onSelect: (i: number) => void;
 }) {
-  const fillPct = ((active + 1) / personas.length) * 100;
+  // Fill aligns with the active item's vertical center within the list.
+  const fillPct = ((active + 0.5) / personas.length) * 100;
 
   return (
-    <nav className="relative lg:sticky lg:top-24">
-      {/* Single vertical progress bar — desktop only */}
-      <div
-        aria-hidden
-        className="absolute bottom-0 left-0 top-0 hidden w-px bg-ink/10 lg:block"
-      />
-      <div
-        aria-hidden
-        className="absolute bottom-0 left-0 top-0 hidden w-px origin-top bg-ink lg:block"
-        style={{
-          transform: `scaleY(${fillPct / 100})`,
-          transition: "transform 700ms cubic-bezier(0.4, 0, 0.2, 1)",
-        }}
-      />
+    <nav className="lg:sticky lg:top-24">
+      {/* Vertical track + fill — bounded to the list height (desktop only) */}
+      <div className="relative">
+        <div
+          aria-hidden
+          className="absolute bottom-0 left-0 top-0 hidden w-px bg-ink/10 lg:block"
+        />
+        <div
+          aria-hidden
+          className="absolute left-0 top-0 hidden w-px bg-ink lg:block"
+          style={{
+            height: `${fillPct}%`,
+            transition: "height 1200ms cubic-bezier(0.4, 0, 0.2, 1)",
+          }}
+        />
 
-      <ul className="flex flex-row flex-wrap gap-x-5 gap-y-3 lg:flex-col lg:gap-5 lg:pl-6">
-        {personas.map((p, i) => {
-          const isActive = i === active;
-          return (
-            <li key={p.key}>
-              <button
-                type="button"
-                onClick={() => onSelect(i)}
-                className={`text-left text-base font-medium leading-snug transition ${
-                  isActive ? "text-ink" : "text-ink-muted hover:text-ink-soft"
-                }`}
-              >
-                {p.label}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+        <ul className="flex flex-row flex-wrap gap-x-5 gap-y-3 lg:flex-col lg:gap-6 lg:pl-6">
+          {personas.map((p, i) => {
+            const isActive = i === active;
+            return (
+              <li key={p.key} className="lg:relative">
+                {isActive && (
+                  <span
+                    aria-hidden
+                    className="absolute -left-6 top-1/2 hidden h-2 w-2 -translate-y-1/2 rounded-full bg-ink lg:block"
+                  />
+                )}
+                <button
+                  type="button"
+                  onClick={() => onSelect(i)}
+                  className={`text-left leading-snug transition ${
+                    isActive
+                      ? "text-lg font-semibold text-ink lg:text-xl"
+                      : "text-base font-medium text-ink-subtle hover:text-ink-soft"
+                  }`}
+                >
+                  {p.label}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </nav>
   );
 }

@@ -65,7 +65,7 @@ export function Hero() {
         />
 
         <div className="container-page relative flex h-full flex-col items-center text-center">
-          <div className="pt-12 md:pt-16">
+          <div className="pt-28 md:pt-36">
             <h1 className="max-w-5xl text-display font-normal tracking-tight text-ink">
               Clinical-grade coaching.
               <br className="hidden md:block" />

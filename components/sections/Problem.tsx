@@ -1,7 +1,7 @@
 const STATS = [
+  { value: "$60–70", label: "PMPM cost of live coaching" },
   { value: "15M+", label: "Global coach & clinician shortage" },
   { value: "27M", label: "Americans without coverage" },
-  { value: "$60–70", label: "PMPM cost of live coaching" },
 ];
 
 export function Problem() {

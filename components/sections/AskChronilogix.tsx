@@ -29,9 +29,7 @@ export function AskChronilogix() {
     >
       <div className="container-page">
         <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
-          <p className="eyebrow">Try it yourself</p>
-
-          <h2 className="mt-6 text-section font-normal tracking-tight text-ink md:text-display">
+          <h2 className="text-section font-normal tracking-tight text-ink md:text-display">
             Ask anything about Chronilogix.
           </h2>
 

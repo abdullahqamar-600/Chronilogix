@@ -1,5 +1,4 @@
 import { AETNA_QUOTE, NamedQuote } from "@/components/NamedQuote";
-import { ComplianceBadges } from "@/components/ComplianceBadges";
 
 const STATS = [
   {
@@ -47,17 +46,6 @@ export function TrustSignals() {
               </p>
             </div>
           ))}
-        </div>
-
-        <div className="mt-14 flex flex-col items-center gap-5 text-center">
-          <ComplianceBadges />
-          <p className="max-w-2xl text-base font-medium leading-snug text-ink md:text-lg">
-            Member data is never used to train our models.
-            <span className="ml-2 text-brand-700">Not now. Not ever.</span>
-          </p>
-          <p className="text-xs uppercase tracking-[0.18em] text-ink-muted">
-            Built for healthcare. Verified for enterprise.
-          </p>
         </div>
       </div>
     </section>

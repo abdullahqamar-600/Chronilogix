@@ -1,58 +1,53 @@
-const COLUMNS: { title: string; links: string[] }[] = [
-  {
-    title: "Platform",
-    links: ["How It Works", "The Methodology", "Integrations", "Changelog"],
-  },
-  {
-    title: "Solutions",
-    links: ["Employers", "Universities", "Health Plans", "App Partners"],
-  },
-  {
-    title: "Company",
-    links: ["About", "Dr. Ken Resnicow", "Careers", "Blog", "Responsible AI"],
-  },
-  {
-    title: "Resources",
-    links: ["Case Studies", "Trust & Security", "Clinical Approach"],
-  },
-  {
-    title: "Legal",
-    links: ["Privacy Policy", "Terms of Service", "HIPAA Notice"],
-  },
+const NAV_LINKS = [
+  { href: "#solution", label: "Solution" },
+  { href: "#who-we-serve", label: "Who We Serve" },
+  { href: "#why-chronilogix", label: "Why Chronilogix" },
 ];
 
 export function Footer() {
   return (
-    <footer className="bg-ink text-white">
-      <div className="container-page py-20">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
-          {COLUMNS.map((col) => (
-            <div key={col.title}>
-              <h4 className="text-xs font-medium uppercase tracking-[0.16em] text-white/50">
-                {col.title}
-              </h4>
-              <ul className="mt-4 space-y-3">
-                {col.links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-sm text-white/80 transition hover:text-white"
-                    >
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+    <footer
+      className="relative isolate overflow-hidden bg-paper text-ink"
+      style={{
+        backgroundImage: "url('/footer.png')",
+        backgroundSize: "100% auto",
+        backgroundPosition: "center bottom",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div className="container-page relative py-28 md:py-36 lg:py-44">
+        <div className="flex flex-col gap-16 md:flex-row md:items-end md:justify-between md:gap-12">
+          <div className="max-w-md">
+            <img
+              src="/cronilogix-logo.svg"
+              alt="Chronilogix"
+              className="h-9 w-auto md:h-10"
+            />
+            <p className="mt-8 text-base leading-relaxed text-ink-soft md:text-lg">
+              Clinical-grade behavioral health coaching, at the scale your
+              members deserve.
+            </p>
+          </div>
+
+          <nav aria-label="Footer">
+            <ul className="flex flex-col gap-5 md:items-end">
+              {NAV_LINKS.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    className="text-base text-ink transition hover:text-ink-soft md:text-lg"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
-      </div>
-      <div className="border-t border-white/10">
-        <div className="container-page flex flex-col items-start gap-3 py-6 text-xs text-white/60 md:flex-row md:items-center md:justify-between">
+
+        <div className="mt-24 flex flex-col items-start gap-3 border-t border-ink/15 pt-8 text-xs text-ink-muted md:mt-32 md:flex-row md:items-center md:justify-between">
           <p>© 2026 Chronilogix · HIPAA Compliant · Made in the USA</p>
-          <p className="text-white/40">
-            Member data is never used to train our models.
-          </p>
+          <p>Member data is never used to train our models.</p>
         </div>
       </div>
     </footer>

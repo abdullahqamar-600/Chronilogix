@@ -10,10 +10,17 @@ const NAV_LINKS = [
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [pastHero, setPastHero] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 8);
+      // Hero runway is 260vh with a 100vh sticky panel — once we've scrolled
+      // more than ~1.4 viewports, the user has visually passed the hero.
+      setPastHero(y > window.innerHeight * 1.4);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -50,7 +57,7 @@ export function Nav() {
 
         <div
           className={`hidden lg:flex transition-opacity duration-200 ${
-            scrolled ? "opacity-100" : "pointer-events-none opacity-0"
+            pastHero ? "opacity-100" : "pointer-events-none opacity-0"
           }`}
         >
           {/* TODO: Calendly URL */}
