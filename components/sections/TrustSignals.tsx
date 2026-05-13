@@ -32,12 +32,9 @@ export function TrustSignals() {
           />
         </div>
 
-        <div className="mt-16 grid gap-8 md:grid-cols-3 md:gap-6">
+        <div className="mt-16 grid gap-10 md:grid-cols-3 md:gap-12">
           {STATS.map((stat) => (
-            <div
-              key={stat.value}
-              className="border-t border-ink/10 pt-6 md:border-t-0 md:border-l md:pl-6 md:pt-0"
-            >
+            <div key={stat.value}>
               <p className="text-4xl font-medium tracking-tight text-ink md:text-5xl">
                 {stat.value}
               </p>

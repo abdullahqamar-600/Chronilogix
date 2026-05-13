@@ -28,10 +28,10 @@ export function Nav() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 w-full transition-all ${
+      className={`fixed left-0 right-0 z-40 w-full transition-all ${
         scrolled
-          ? "bg-paper/85 backdrop-blur-md border-b border-ink/5"
-          : "bg-transparent border-b border-transparent"
+          ? "top-0 bg-paper/85 backdrop-blur-md border-b border-ink/5"
+          : "top-4 md:top-6 bg-transparent border-b border-transparent"
       }`}
     >
       <div className="container-page flex h-16 items-center justify-between md:h-20">

@@ -71,9 +71,11 @@ function StepCard({
       <div className="relative aspect-square overflow-hidden">
         <Visual />
       </div>
-      <div className="p-6 md:p-8 lg:p-10">
-        <p className="text-sm font-medium text-brand-700">{step.label}</p>
-        <h3 className="mt-3 max-w-sm text-xl font-normal leading-snug text-ink md:text-2xl">
+      <div className="p-6 md:p-7">
+        <p className="text-xs font-medium uppercase tracking-[0.14em] text-brand-700">
+          {step.label}
+        </p>
+        <h3 className="mt-2.5 max-w-sm text-lg font-normal leading-snug text-ink md:text-xl">
           {step.title}
         </h3>
       </div>
@@ -100,25 +102,25 @@ function IntakeVisual() {
   }, []);
 
   return (
-    <div className="absolute inset-0 flex flex-col items-start justify-center bg-gradient-to-br from-paper via-paper to-brand-50/60 p-8 md:p-10 lg:p-12">
+    <div className="absolute inset-0 flex flex-col items-start justify-center bg-gradient-to-br from-paper via-paper to-brand-50/60 p-7 md:p-8">
       <div key={tick} className="flex w-full flex-col items-start">
         <BrainIcon />
-        <h4 className="mt-4 text-3xl font-normal tracking-tight text-ink md:text-4xl">
+        <h4 className="mt-3 text-2xl font-normal tracking-tight text-ink md:text-3xl">
           Listening
         </h4>
 
-        <ul className="mt-8 space-y-4 self-stretch pl-6 md:mt-10 md:space-y-5 md:pl-8">
+        <ul className="mt-6 space-y-3 self-stretch pl-5 md:mt-7 md:space-y-3.5 md:pl-7">
           {items.map((label, i) => (
             <li
               key={label}
-              className="flex items-center gap-3.5 text-base leading-snug text-ink md:text-lg"
+              className="flex items-center gap-3 text-sm leading-snug text-ink md:text-base"
               style={{
                 animation: `fadeUp 500ms ease-out ${i * 450 + 500}ms forwards`,
                 opacity: 0,
               }}
             >
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600">
-                <svg width="12" height="12" viewBox="0 0 9 9" fill="none" aria-hidden>
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600">
+                <svg width="11" height="11" viewBox="0 0 9 9" fill="none" aria-hidden>
                   <path
                     d="M1.5 4.5 3.5 6.5 7.5 2.5"
                     stroke="currentColor"
@@ -140,7 +142,7 @@ function IntakeVisual() {
 function BrainIcon() {
   return (
     <span
-      className="relative inline-flex h-10 w-10 shrink-0 md:h-11 md:w-11"
+      className="relative inline-flex h-8 w-8 shrink-0 md:h-9 md:w-9"
       aria-hidden
     >
       <img
@@ -176,7 +178,7 @@ function SessionVisual() {
 
   return (
     <div
-      className="absolute inset-0 flex flex-col items-start justify-center gap-4 p-8 md:p-10"
+      className="absolute inset-0 flex flex-col items-start justify-center gap-5 p-7 md:p-8"
       style={{
         background:
           "linear-gradient(135deg, #FFF5EE 0%, #FFE6D4 55%, #FFCDA8 100%)",
@@ -184,7 +186,7 @@ function SessionVisual() {
     >
       <div
         key={idx}
-        className="w-full rounded-[28px] bg-white/85 px-6 py-5 text-base leading-snug text-ink shadow-sm backdrop-blur-sm md:px-7 md:py-6 md:text-lg"
+        className="w-full rounded-[24px] bg-white/85 px-5 py-4 text-sm leading-snug text-ink shadow-sm backdrop-blur-sm md:px-6 md:py-5 md:text-base"
         style={{
           animation: "fadeUp 600ms ease-out forwards",
           opacity: 0,
@@ -192,74 +194,201 @@ function SessionVisual() {
       >
         {SESSION_MESSAGES[idx]}
       </div>
-      <AIOrb size={36} />
+      <AIOrb size={32} />
     </div>
   );
 }
 
 function MemoryVisual() {
   const STAGES = [
-    { label: "Two Weeks Ago", text: "“Sundays are the hardest.”" },
+    { label: "Two Weeks Ago", text: "“Sundays feel impossible.”" },
     { label: "Last Session", text: "“Cooking grounds me.”" },
-    { label: "Today", text: "“Building on both insights.”" },
+    { label: "Today", text: "“It's Sunday — what are you cooking today? Any dish in mind?”" },
   ];
-  const STAGE_MS = 3500;
+  const STAGE_MS = 5000;
+  const TRANSITION_MS = 900;
+  // Resting horizontal position of the active circle, as % of viewport.
+  // The orange "past" line trails off-screen to its left.
+  const ACTIVE_POS_PCT = 20;
+  const N = STAGES.length;
+  const SEG_PCT = 100 / N; // one segment = 100% of viewport = 33.33% of track
+  // The line ends at the last circle — no track beyond "Today".
+  const LINE_END_PCT = (N - 1) * SEG_PCT;
+
   const [stage, setStage] = useState(0);
+  const [animated, setAnimated] = useState(true);
 
   useEffect(() => {
-    const t = setInterval(
-      () => setStage((s) => (s + 1) % STAGES.length),
-      STAGE_MS,
-    );
+    const t = setInterval(() => {
+      setStage((s) => {
+        const next = (s + 1) % N;
+        // Snap-reset (no easing) when looping back to stage 0 so the
+        // pipeline doesn't visibly rewind.
+        if (next === 0) {
+          setAnimated(false);
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => setAnimated(true)),
+          );
+        }
+        return next;
+      });
+    }, STAGE_MS);
     return () => clearInterval(t);
   }, []);
 
-  const isLast = stage === STAGES.length - 1;
+  // Translate so the active circle (at track x = stage * 100% of viewport)
+  // lands at viewport x = ACTIVE_POS_PCT.
+  // Expressed as % of the track (track width = N * 100% of viewport):
+  const translatePct = (ACTIVE_POS_PCT - stage * 100) / N;
 
   return (
-    <div className="absolute inset-0 flex flex-col justify-center bg-gradient-to-br from-paper via-paper to-brand-50/40 p-8 md:p-10 lg:p-12">
-      {/* Pipeline — full width, two nodes joined by a brand-colored line */}
-      <div className="flex items-center">
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white shadow-sm">
-          <svg width="12" height="12" viewBox="0 0 9 9" fill="none" aria-hidden>
-            <path
-              d="M1.5 4.5 3.5 6.5 7.5 2.5"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </span>
-        <div className="h-px flex-1 bg-brand-600" />
-        {isLast ? (
-          <AIOrb size={28} />
-        ) : (
-          <span className="h-7 w-7 shrink-0 rounded-full bg-brand-100" />
-        )}
-      </div>
+    <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-paper via-paper to-brand-50/40">
+      {/* One long horizontal track containing all stages.
+       *  Each circle + its label/quote live in the same segment, so they
+       *  translate together as the track scrolls left. The orange line
+       *  trails behind the active circle, extending off the left edge. */}
+      <div
+        className="absolute inset-y-0 left-0"
+        style={{
+          width: `${N * 100}%`,
+          transform: `translateX(${translatePct}%)`,
+          transition: animated
+            ? `transform ${TRANSITION_MS}ms cubic-bezier(0.65, 0, 0.35, 1)`
+            : "none",
+        }}
+      >
+        {/* Grey baseline — runs from the first circle to the last circle */}
+        <div
+          className="absolute h-0.5 rounded-full bg-ink/15"
+          style={{
+            top: "calc(35% + 11px)",
+            left: 0,
+            width: `${LINE_END_PCT}%`,
+          }}
+        />
+        {/* Orange "past" line — grows in lockstep with the track so it
+         *  always terminates at the active circle's track position. */}
+        <div
+          className="absolute h-0.5 rounded-full bg-brand-600"
+          style={{
+            top: "calc(35% + 11px)",
+            left: 0,
+            width: `${stage * SEG_PCT}%`,
+            transition: animated
+              ? `width ${TRANSITION_MS}ms cubic-bezier(0.65, 0, 0.35, 1)`
+              : "none",
+          }}
+        />
 
-      {/* Label + quote — crossfade on stage change */}
-      <div key={stage} className="mt-8 md:mt-10">
-        <p
-          className="text-sm font-medium text-brand-600 md:text-base"
-          style={{
-            animation: "fadeUp 450ms ease-out forwards",
-            opacity: 0,
-          }}
-        >
-          {STAGES[stage].label}
-        </p>
-        <p
-          className="mt-3 text-2xl font-normal leading-snug text-ink md:text-3xl"
-          style={{
-            animation: "fadeUp 600ms ease-out 180ms forwards",
-            opacity: 0,
-          }}
-        >
-          {STAGES[stage].text}
-        </p>
+        {/* Each stage = one segment: circle on top, label + quote below */}
+        {STAGES.map((s, i) => (
+          <div
+            key={i}
+            className="absolute inset-y-0"
+            style={{
+              left: `${i * SEG_PCT}%`,
+              width: `${SEG_PCT}%`,
+            }}
+          >
+            <div className="absolute left-0 top-[35%]">
+              <MemoryNode
+                active={i <= stage}
+                animated={animated}
+                isFinal={i === N - 1}
+              />
+            </div>
+            <div
+              className="absolute left-0"
+              style={{
+                top: "calc(35% + 3rem)",
+                right: `${ACTIVE_POS_PCT}%`,
+              }}
+            >
+              <p className="text-xs font-medium text-brand-600 md:text-sm">
+                {s.label}
+              </p>
+              <p className="mt-2.5 text-xl font-normal leading-snug text-ink md:text-2xl">
+                {s.text}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
+  );
+}
+
+function MemoryNode({
+  active,
+  animated,
+  isFinal,
+}: {
+  active: boolean;
+  animated: boolean;
+  isFinal: boolean;
+}) {
+  // Final node ("Today") swaps the tick circle for the AIOrb when active —
+  // gives the loop a distinct terminal beat instead of a third identical tick.
+  if (isFinal) {
+    return (
+      <span className="relative inline-block h-6 w-6">
+        <span
+          className="absolute inset-0 rounded-full bg-brand-100"
+          style={{
+            opacity: active ? 0 : 1,
+            transition: animated ? "opacity 400ms ease-out 1400ms" : "none",
+          }}
+        />
+        <span
+          className="absolute inset-0 flex items-center justify-center"
+          style={{
+            opacity: active ? 1 : 0,
+            transform: active ? "scale(1)" : "scale(0.7)",
+            transition: animated
+              ? "opacity 450ms ease-out 1400ms, transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1) 1400ms"
+              : "none",
+          }}
+        >
+          <AIOrb size={24} />
+        </span>
+      </span>
+    );
+  }
+
+  // Non-final nodes: peach pending → orange filled circle with a drawn-in tick
+  return (
+    <span
+      className="flex h-6 w-6 items-center justify-center rounded-full shadow-sm"
+      style={{
+        backgroundColor: active ? "#FF7434" : "#FFE6D4",
+        transition: animated
+          ? "background-color 300ms ease-out 1350ms"
+          : "none",
+      }}
+    >
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 9 9"
+        fill="none"
+        aria-hidden
+      >
+        <path
+          d="M1.5 4.5 3.5 6.5 7.5 2.5"
+          stroke="white"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          pathLength={10}
+          style={{
+            strokeDasharray: 10,
+            strokeDashoffset: active ? 0 : 10,
+            transition: animated
+              ? "stroke-dashoffset 360ms cubic-bezier(0.65, 0, 0.35, 1) 1500ms"
+              : "none",
+          }}
+        />
+      </svg>
+    </span>
   );
 }

@@ -249,36 +249,40 @@ function PersonaNav({
 
   return (
     <nav className="lg:sticky lg:top-24">
-      {/* Vertical track + fill — bounded to the list height (desktop only) */}
+      {/* Vertical track + fill — bounded to the persona list height (lg+) */}
       <div className="relative">
         <div
           aria-hidden
-          className="absolute bottom-0 left-0 top-0 hidden w-px bg-ink/10 lg:block"
+          className="absolute bottom-0 left-0 top-0 hidden w-0.5 rounded-full bg-ink/10 lg:block"
         />
         <div
           aria-hidden
-          className="absolute left-0 top-0 hidden w-px bg-ink lg:block"
+          className="absolute left-0 top-0 hidden w-0.5 rounded-full bg-brand-600 lg:block"
           style={{
             height: `${fillPct}%`,
-            transition: "height 1200ms cubic-bezier(0.4, 0, 0.2, 1)",
+            transition: "height 700ms cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         />
 
-        <ul className="flex flex-row flex-wrap gap-x-5 gap-y-3 lg:flex-col lg:gap-6 lg:pl-6">
+        <ul className="flex flex-row flex-wrap gap-x-5 gap-y-3 lg:flex-col lg:gap-7 lg:pl-8">
           {personas.map((p, i) => {
             const isActive = i === active;
             return (
               <li key={p.key} className="lg:relative">
-                {isActive && (
-                  <span
-                    aria-hidden
-                    className="absolute -left-6 top-1/2 hidden h-2 w-2 -translate-y-1/2 rounded-full bg-ink lg:block"
-                  />
-                )}
+                {/* Persona-row marker — centered ON the track at the row's vertical middle */}
+                <span
+                  aria-hidden
+                  className={`absolute top-1/2 hidden -translate-x-1/2 -translate-y-1/2 rounded-full ring-4 ring-paper transition-all duration-300 lg:block ${
+                    isActive
+                      ? "h-2.5 w-2.5 bg-brand-600"
+                      : "h-1.5 w-1.5 bg-ink/20"
+                  }`}
+                  style={{ left: "-2rem" }}
+                />
                 <button
                   type="button"
                   onClick={() => onSelect(i)}
-                  className={`text-left leading-snug transition ${
+                  className={`text-left leading-snug transition-colors ${
                     isActive
                       ? "text-lg font-semibold text-ink lg:text-xl"
                       : "text-base font-medium text-ink-subtle hover:text-ink-soft"
