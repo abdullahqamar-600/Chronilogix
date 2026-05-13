@@ -61,18 +61,18 @@ export function Hero() {
       >
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-paper-warm/55 via-paper-warm/20 to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-paper-warm/25 via-paper-warm/8 to-transparent"
         />
 
         <div className="container-page relative flex h-full flex-col items-center text-center">
-          <div className="pt-24 md:pt-32">
+          <div className="pt-12 md:pt-16">
             <h1 className="max-w-5xl text-display font-normal tracking-tight text-ink">
               Clinical-grade coaching.
               <br className="hidden md:block" />
               For every member you serve.
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-soft md:mt-6 md:text-lg">
-              For employers, universities, health plans, and app partners.
+            <p className="mx-auto mt-5 max-w-2xl text-center text-base leading-relaxed text-ink-soft md:mt-6 md:text-lg">
+              For employers, universities, health plans, and wellness app partners.
             </p>
           </div>
 

@@ -4,16 +4,20 @@ import { useEffect, useState } from "react";
 import { AIOrb } from "@/components/AIOrb";
 
 const CONVERSATION = {
-  aiQuestion:
-    "You mentioned last time that anxiety mostly shows up on Sunday evenings. What does that feel like when it starts?",
+  aiQuestionLines: [
+    "You mentioned last time that anxiety mostly shows up on Sunday evenings.",
+    "What does that feel like when it starts?",
+  ],
   userReply:
     "Like dread. I start thinking about everything I didn’t finish and everything waiting for me. My chest gets tight and I just want Monday to be over before it starts.",
-  aiReflection:
-    "So it’s less about Monday itself, and more about feeling behind before you’ve even begun. Like you’re already losing a race you haven’t started yet.",
+  aiReflectionLines: [
+    "So it’s less about Monday itself, and more about feeling behind before you’ve even begun.",
+    "Like you’re already losing a race you haven’t started yet.",
+  ],
 };
 
-const TYPE_SPEED = 18; // ms per char
-const CYCLE_MS = 22000;
+const LINE_GAP = 700; // ms between lines fading in
+const CYCLE_MS = 11000;
 
 const SCREEN = {
   top: (24 / 1375) * 100,
@@ -33,7 +37,7 @@ const NOTCH = {
 export function HeroPhoneMockup({ progress }: { progress: number }) {
   const phoneRiseLinear = clamp01((progress - 0.15) / (0.7 - 0.15));
   const phoneRise = easeInOutCubic(phoneRiseLinear);
-  const phoneTranslateY = 100 - phoneRise * 75;
+  const phoneTranslateY = 100 - phoneRise * 60;
 
   return (
     <div
@@ -123,19 +127,19 @@ function ChatScreen({ active }: { active: boolean }) {
             Hi!
           </h3>
 
-          {/* AI Question — typewriter */}
-          <Typewriter
-            text={CONVERSATION.aiQuestion}
+          {/* AI Question — lines fade in */}
+          <LinesFadeIn
+            lines={CONVERSATION.aiQuestionLines}
             startDelay={1500}
-            speed={TYPE_SPEED}
-            className="mt-3 text-[13px] leading-[1.45]"
+            lineGap={LINE_GAP}
+            className="mt-3 space-y-1 text-[13px] leading-[1.45]"
           />
 
           {/* User Reply — fade-up bubble */}
           <div
             className="mt-5 flex justify-end"
             style={{
-              animation: "fadeUp 600ms ease-out 5500ms forwards",
+              animation: "fadeUp 600ms ease-out 3700ms forwards",
               opacity: 0,
             }}
           >
@@ -151,12 +155,12 @@ function ChatScreen({ active }: { active: boolean }) {
             </div>
           </div>
 
-          {/* AI Reflection — typewriter */}
-          <Typewriter
-            text={CONVERSATION.aiReflection}
-            startDelay={8500}
-            speed={TYPE_SPEED}
-            className="mt-5 text-[13px] leading-[1.45]"
+          {/* AI Reflection — lines fade in */}
+          <LinesFadeIn
+            lines={CONVERSATION.aiReflectionLines}
+            startDelay={5400}
+            lineGap={LINE_GAP}
+            className="mt-5 space-y-1 text-[13px] leading-[1.45]"
           />
         </div>
       )}
@@ -164,50 +168,34 @@ function ChatScreen({ active }: { active: boolean }) {
   );
 }
 
-/** Character-by-character text reveal, with hidden-text spacer to
- *  prevent layout shift as text fills in. */
-function Typewriter({
-  text,
+/** Line-by-line fade-up reveal. Each line is rendered as a block-level
+ *  span so layout is reserved up front (opacity: 0 → 1 via animation). */
+function LinesFadeIn({
+  lines,
   startDelay,
-  speed,
+  lineGap,
   className,
 }: {
-  text: string;
+  lines: string[];
   startDelay: number;
-  speed: number;
+  lineGap: number;
   className?: string;
 }) {
-  const [visible, setVisible] = useState(0);
-
-  useEffect(() => {
-    setVisible(0);
-    let charTimer: ReturnType<typeof setInterval> | undefined;
-
-    const startTimer = setTimeout(() => {
-      charTimer = setInterval(() => {
-        setVisible((v) => {
-          const next = v + 1;
-          if (next >= text.length && charTimer) {
-            clearInterval(charTimer);
-          }
-          return Math.min(next, text.length);
-        });
-      }, speed);
-    }, startDelay);
-
-    return () => {
-      clearTimeout(startTimer);
-      if (charTimer) clearInterval(charTimer);
-    };
-  }, [text, startDelay, speed]);
-
   return (
-    <p className={`relative ${className ?? ""}`} style={{ color: "#583C14" }}>
-      <span aria-hidden className="invisible">
-        {text}
-      </span>
-      <span className="absolute inset-0">{text.slice(0, visible)}</span>
-    </p>
+    <div className={className} style={{ color: "#583C14" }}>
+      {lines.map((line, i) => (
+        <span
+          key={i}
+          className="block"
+          style={{
+            animation: `fadeUp 500ms ease-out ${startDelay + i * lineGap}ms forwards`,
+            opacity: 0,
+          }}
+        >
+          {line}
+        </span>
+      ))}
+    </div>
   );
 }
 
